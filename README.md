@@ -16,3 +16,7 @@ http://3.131.150.188/
 
 
 Ssh -i ~/Documents/AWSkeypair/Journey.pem ubuntu@3.131.150.188 - command to ssh in
+
+
+I learned that the bootstrap framework is awesome for standard webpages.
+I also learned that the margin commond on a square goes in a circular order starting with the line towards the top from the middle. So if i want to change a box into a quarter circle around a point with the center in the bottom left i would use the command margin: 100% 100% 0 0;
