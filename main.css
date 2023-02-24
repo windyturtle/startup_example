@@ -1,0 +1,56 @@
+.brand-name {
+    padding: auto;
+    align-items:normal;
+    border-bottom: solid thick royalblue;
+}
+
+header {
+    flex: 0 80px;
+}
+
+menu {
+    flex: 1;
+    display: flex;
+    flex-direction: row !important;
+    list-style: none;
+}
+
+.nav-item {
+    padding: 8px;
+    align-items: center;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+}
+
+.container-fluid {
+    border-bottom: solid thin gray;
+}
+
+.game-options-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row !important;
+}
+
+.game-options {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    margin-left: 20%;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header {
+    flex: 0;
+    display: flex;
+    flex-direction: column !important;
+}
