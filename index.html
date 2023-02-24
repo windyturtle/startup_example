@@ -40,17 +40,25 @@
 
         <main class="container-fluid bg-secondary text-center">
             <div class="main-header">
-                <h1>Welcome</h1>
-                <p>Choose how to play</p>
+                <h1 class="big-text">Welcome</h1>
+                <p class="small-text">Choose how to play</p>
             </div>
             <div class="game-options-container">
                 <div class="game-options">
                     <h2 class="online">Online</h2>
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='online.html';">Find a Match</button>
                 </div>
                 <div class="game-options">
                     <h2 class="offline">Offline</h2>
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='play.html';">Just you yourself and you</button>
                 </div>
             </div>
         </main>
     </body>
+    <footer class="bg-dark text-dark text-muted">
+        <div class="container-fluid">
+            <span class="text-reset">Tiberius Baker</span>
+            <a class="text-reset" href="https://github.com/windyturtle/startup_example.git">Source</a>
+        </div>
+    </footer>
 </html>
