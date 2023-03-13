@@ -79,3 +79,76 @@ footer {
 footer a {
     float: right;
 }
+
+#chessboard {
+    width: 400px;
+    height: 400px;
+    margin: 100px;
+}
+
+.chess-square {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.chess-square-white {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.chess-square-black {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+var {
+    display: none;
+}
+
+.chess-square-white-pawn {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.chess-square-black-pawn {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.path-circle {
+    color: blue;
+}
+
+.pawn-white {
+    justify-content: center;
+    color: white;
+    margin-left: 7px;
+    font-size: 35px;
+    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor: pointer;
+}
+
+.pawn-black {
+    justify-content: center;
+    color: black;
+    margin-left: 7px;
+    font-size: 35px;
+    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 520px) {
+    #chessboard {
+        margin-left: 130px;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    #chessboard {
+        margin-left: 500px;
+    }
+}
