@@ -80,6 +80,14 @@ footer a {
     float: right;
 }
 
+#output {
+    font-family: "Courier New", Courier, monospace;
+    color: rgb(185, 185, 185);
+    background: rgb(0, 0, 0);
+    padding: 1em;
+    min-height: 10em;
+  }
+
 #chessboard {
     width: 400px;
     height: 400px;

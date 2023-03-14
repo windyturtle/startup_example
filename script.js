@@ -1,5 +1,5 @@
-let gameHistory = [];
 let chessboard;
+let gameTable;
 class ChessBoard {
     allowPlayer = true;
     innerChessBoard = [];
@@ -20,11 +20,6 @@ class ChessBoard {
 
     constructor() {
         this.board = this.makeBoard();
-        globalThis.gameHistory = this.getGameHistory();
-    }
-
-    getGameHistory() {
-        return localStorage.getItem("gameHistory") ?? [];
     }
 
     makeBoard() {
@@ -398,17 +393,14 @@ class ChessBoard {
             }
             this.allowedToPlay = false;   
         }
-        else {
+        else if(!this.kingAlive) {
             let winMessage = document.getElementById("win-message");
             if(this.blackWin) {
                 winMessage.textContent = "Black Wins!";
-                globalThis.gameHistory.push("Black");
             }
             else {
                 winMessage.textContent = "White Wins!";
-                globalThis.gameHistory.push("White");
             }
-            localStorage.setItem("gameHistory", globalThis.gameHistory);
         }
     }
 
