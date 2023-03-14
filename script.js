@@ -1,7 +1,7 @@
 let gameHistory = [];
 
 class ChessBoard {
-    allowPlayer;
+    allowPlayer = true;
     innerChessBoard = [];
     activePiece;
     whiteBackground = "hsla(0,0%,100%,.50)";
@@ -11,10 +11,20 @@ class ChessBoard {
     markTarget = "rgba(200, 245, 0, 0.67)";
     currentMarkedTargets = [];
     currentPathNodes = [];
+    kingAlive = true;
+    whiteWin = false;
+    blackWin = false;
+    blackTurn = false;
+    whiteTurn = true;
+    allowedToPlay = false;
 
     constructor() {
         this.board = this.makeBoard();
-        this.allowPlayer = true;
+        globalThis.gameHistory = this.getGameHistory();
+    }
+
+    getGameHistory() {
+        return localStorage.getItem("gameHistory") ?? [];
     }
 
     makeBoard() {
@@ -210,7 +220,10 @@ class ChessBoard {
     }
 
     insertQueenSpecial(piece, color) {
-        piece.childNodes[2].remove();
+        if(piece.childNodes.length > 2) {
+            piece.childNodes[2].remove();
+        }
+        this.activePiece.childNodes[2].remove();
         let queen = document.createElement("div");
         if(color === "white") {
             queen.className = "queen-white";
@@ -248,31 +261,42 @@ class ChessBoard {
     }
 
     pickUp(piece) {
-        if(piece.childNodes.length > 2) {
+        if(piece.childNodes.length > 2 && this.kingAlive) {
+            if(this.getPieceColor(piece) === "black" && this.whiteTurn) {
+                this.allowedToPlay = true;
+            }
+            else if(this.getPieceColor(piece) === "white" && this.blackTurn) {
+                this.allowedToPlay = true;
+            }
             if(this.allowPlayer) {
-                this.allowPlayer = false;
-                if(piece.className.indexOf("chess-square-black") != -1) {
-                    piece.style.background = this.blackActive;
-                }
-                else if(piece.className.indexOf("chess-square-white") != -1) {
-                    piece.style.background = this.whiteActive;
-                }
-                let className = piece.childNodes[2].className;
-                this.activePiece = piece;
-                if(className.indexOf("pawn") != -1) {
-                    this.makePawnPath(piece);
-                }
-                else if(className.indexOf("rook") != -1) {
-                    this.makeRookPath(piece, className);
-                }
-                else if(className.indexOf("knight") != -1) {
-                    this.makeKnightPath(piece, className);
-                }
-                else if(className.indexOf("bishop") != -1) {
-                    this.makeBishopPath(piece, className);
-                }
-                else if(className.indexOf("queen") != -1) {
-                    this.makeQueenPath(piece, className);
+                if(this.allowedToPlay) {
+                    this.allowPlayer = false;
+                    if(piece.className.indexOf("chess-square-black") != -1) {
+                        piece.style.background = this.blackActive;
+                    }
+                    else if(piece.className.indexOf("chess-square-white") != -1) {
+                        piece.style.background = this.whiteActive;
+                    }
+                    let className = piece.childNodes[2].className;
+                    this.activePiece = piece;
+                    if(className.indexOf("pawn") != -1) {
+                        this.makePawnPath(piece);
+                    }
+                    else if(className.indexOf("rook") != -1) {
+                        this.makeRookPath(piece, className);
+                    }
+                    else if(className.indexOf("knight") != -1) {
+                        this.makeKnightPath(piece, className);
+                    }
+                    else if(className.indexOf("bishop") != -1) {
+                        this.makeBishopPath(piece, className);
+                    }
+                    else if(className.indexOf("queen") != -1) {
+                        this.makeQueenPath(piece, className);
+                    }
+                    else if(className.indexOf("king") != -1) {
+                        this.makeKingPath(piece, className);
+                    }
                 }
             }
             else if(piece.style.background === this.blackActive) {
@@ -287,6 +311,7 @@ class ChessBoard {
             }
             else if(piece.style.background === this.whiteActive) {
                 this.determinePathRemoval();
+                
                 for(let i = 0; i < this.currentMarkedTargets.length; i++) {
                     this.makeSquareOriginalColor(this.currentMarkedTargets[i]);
                 }
@@ -297,16 +322,23 @@ class ChessBoard {
             }
             else if(piece.childNodes[2].className === "path-circle") {
                 this.determinePathRemoval();
-                piece.appendChild(this.activePiece.childNodes[2]);
-                if(this.getPieceColor(piece) === "white") {
-                    if(parseInt(piece.childNodes[0].textContent) === 7 && this.getPieceType(piece) === "pawn") {
-                        this.insertQueenSpecial(piece, "white");
-                    } 
+                if(this.getPieceColor(this.activePiece) === "black" && this.whiteTurn) {
+                    this.whiteTurn = false;
+                    this.blackTurn = true;
                 }
+                else if(this.getPieceColor(this.activePiece) === "white" && this.blackTurn) {
+                    this.whiteTurn = true;
+                    this.blackTurn = false;
+                }
+                
+                if(parseInt(piece.childNodes[0].textContent) === 0 && this.getPieceType(this.activePiece) === "pawn") {
+                    this.insertQueenSpecial(piece, "black");
+                } 
+                else if(parseInt(piece.childNodes[0].textContent) === 7 && this.getPieceType(this.activePiece) === "pawn") {
+                    this.insertQueenSpecial(piece, "white");
+                } 
                 else {
-                    if(parseInt(piece.childNodes[0].textContent) === 0 && this.getPieceType(piece) === "pawn") {
-                        this.insertQueenSpecial(piece, "black");
-                    } 
+                    piece.appendChild(this.activePiece.childNodes[2]);
                 }
                 this.allowPlayer = true;
                 if(this.activePiece.style.background === this.blackActive) {
@@ -323,15 +355,60 @@ class ChessBoard {
             }
             else if(piece.style.background === this.markTarget) {
                 this.determinePathRemoval();
+                if(this.getPieceColor(this.activePiece) === "black" && this.whiteTurn) {
+                    this.whiteTurn = false;
+                    this.blackTurn = true;
+                }
+                else if(this.getPieceColor(this.activePiece) === "white" && this.blackTurn) {
+                    this.whiteTurn = true;
+                    this.blackTurn = false;
+                }
                 for(let i = 0; i < this.currentMarkedTargets.length; i++) {
                     this.makeSquareOriginalColor(this.currentMarkedTargets[i]);
                 }
-                piece.childNodes[2].remove();
-                piece.appendChild(this.activePiece.childNodes[2]);
+                if(this.getPieceColor(piece) === "white") {
+                    if(parseInt(piece.childNodes[0].textContent) === 0 && this.getPieceType(this.activePiece) === "pawn") {
+                        this.insertQueenSpecial(piece, "black");
+                    } 
+                    else {
+                        if(piece.childNodes[2].className.indexOf("king") != -1) {
+                            this.kingAlive = false;
+                            this.whiteWin = true;
+                        }
+                        piece.childNodes[2].remove();
+                        piece.appendChild(this.activePiece.childNodes[2]);
+                    }
+                }
+                else {
+                    if(parseInt(piece.childNodes[0].textContent) === 7 && this.getPieceType(this.activePiece) === "pawn") {
+                        this.insertQueenSpecial(piece, "white");
+                    } 
+                    else {
+                        if(piece.childNodes[2].className.indexOf("king") != -1) {
+                            this.kingAlive = false;
+                            this.blackWin = true;
+                        }
+                        piece.childNodes[2].remove();
+                        piece.appendChild(this.activePiece.childNodes[2]);
+                    }
+                }
                 this.makeSquareOriginalColor(this.activePiece);
                 this.activePiece = null;
                 this.allowPlayer = true;
             }
+            this.allowedToPlay = false;   
+        }
+        else {
+            let winMessage = document.getElementById("win-message");
+            if(this.blackWin) {
+                winMessage.textContent = "Black Wins!";
+                globalThis.gameHistory.push("Black");
+            }
+            else {
+                winMessage.textContent = "White Wins!";
+                globalThis.gameHistory.push("White");
+            }
+            localStorage.setItem("gameHistory", globalThis.gameHistory);
         }
     }
 
@@ -372,7 +449,7 @@ class ChessBoard {
             }
         }
         else if(children[2].className.indexOf("pawn-black") != -1) {
-            if(i > 1) {
+            if(i > 0) {
                 this.findPawnAttacks(i-2, j, "-black");
                 let result = this.findAndInsertPawnPath(i - 1, j);
                 if((i > 2) && result != null && i === 6) {
@@ -738,6 +815,57 @@ class ChessBoard {
     makeQueenPath(piece, className) {
         this.makeRookPath(piece, className);
         this.makeBishopPath(piece, className);
+    }
+
+    makeKingPath(piece, className) {
+        let kingI = parseInt(piece.childNodes[0].textContent);
+        let kingJ = parseInt(piece.childNodes[1].textContent);
+        let color = className.substring(className.indexOf("-") + 1);
+        this.kingPath(color, kingI, kingJ);
+    }
+
+    kingPath(color, kingI, kingJ) {
+        let index = 0;
+        let currNode;
+        kingI -= 1;
+        let skipped = false;
+        for(let i = 0; i < 8; i++) {
+            index = kingI * 8 + kingJ;
+            if(index > 0 && index < 66 && kingJ > 0) {
+                currNode = this.innerChessBoard[index];
+                if(currNode.childNodes.length === 3) {
+                    if(this.getPieceColor(currNode) != color && this.getPieceType(currNode) != "path") {
+                        currNode.style.background = this.markTarget;
+                        this.currentMarkedTargets.push(currNode);
+                    }
+                } 
+                else {
+                    this.insertPathElement(currNode);
+                }
+            }
+            if((i === 0 || i === 1)) {
+                if(kingJ < 8) {
+                    kingJ += 1;
+                }
+                else {
+                    skipped = true;
+                }
+            }
+            else if(i > 1 && i < 4) {
+                kingI += 1;
+            }
+            else if(i > 3 && i < 6 && kingJ > -1) {
+                if(kingJ > -1 && !skipped) {
+                    kingJ -= 1;
+                }
+                else {
+                    skipped = false;
+                }
+            }
+            else if(i > 5 && i < 8) {
+                kingI -= 1;
+            }
+        }
     }
 }
 

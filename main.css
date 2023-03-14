@@ -133,6 +133,12 @@ var {
     cursor: pointer;
 }
 
+#win-message {
+    justify-content: center;
+    text-align: center;
+    vertical-align: auto;
+}
+
 @media only screen and (min-width: 520px) {
     #chessboard {
         margin-left: 130px;
