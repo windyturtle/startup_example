@@ -1,5 +1,5 @@
 let gameHistory = [];
-
+let chessboard;
 class ChessBoard {
     allowPlayer = true;
     innerChessBoard = [];
@@ -868,7 +868,3 @@ class ChessBoard {
         }
     }
 }
-
-let chessboard;
-
-document.addEventListener("DOMContentLoaded", chessboard = new ChessBoard());
