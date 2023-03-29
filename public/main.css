@@ -1,0 +1,167 @@
+.brand-name {
+    padding: auto;
+    align-items:normal;
+    border-bottom: solid thick royalblue;
+}
+
+button {
+    width: 400px;
+    background-color: royalblue;
+}
+
+header {
+    flex: 0 80px;
+}
+
+menu {
+    flex: 1;
+    display: flex;
+    flex-direction: row !important;
+    list-style: none;
+}
+
+.nav-item {
+    padding: 8px;
+    align-items: center;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+}
+
+.container-fluid {
+    border-bottom: solid thin gray;
+}
+
+.game-options-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row !important;
+}
+
+.game-options {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header {
+    flex: 20%;
+    display: flex;
+    flex-direction: column !important;
+    justify-content: center;
+    text-align: center;
+    border-bottom: solid thick beige;
+}
+
+.big-text {
+    font-size: 96px;
+}
+
+.small-text {
+    font-size: 24px;
+}
+
+footer {
+    border-top: solid thin gray;
+    flex: 0 30px;
+}
+
+footer a {
+    float: right;
+}
+
+#output {
+    font-family: "Courier New", Courier, monospace;
+    color: rgb(185, 185, 185);
+    background: rgb(0, 0, 0);
+    padding: 1em;
+    min-height: 10em;
+  }
+
+#chessboard {
+    width: 400px;
+    height: 350px;
+    margin: 100px;
+}
+
+.chess-square {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.chess-square-white {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.chess-square-black {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+var {
+    display: none;
+}
+
+.path-circle {
+    color: blue;
+    margin-left: 16px;
+    margin-top: 9px;
+    font-size: 20px;
+}
+
+#white {
+    justify-content: center;
+    color: white;
+    margin-left: 7px;
+    font-size: 35px;
+    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor: pointer;
+}
+
+#black {
+    justify-content: center;
+    color: black;
+    margin-left: 7px;
+    font-size: 35px;
+    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor: pointer;
+}
+
+
+#king-in-check {
+    justify-content: center;
+    text-align: center;
+    vertical-align: auto;
+}
+
+#win-message {
+    justify-content: center;
+    text-align: center;
+    vertical-align: auto;
+}
+
+
+@media only screen and (min-width: 520px) {
+    #chessboard {
+        margin-left: 130px;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    #chessboard {
+        margin-left: 500px;
+    }
+}
