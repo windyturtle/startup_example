@@ -1,5 +1,30 @@
 let chessboard;
-let gameTable;
+
+function loadDatabase() {
+    const { MongoClient } = require('mongodb');
+
+    const userName = process.env.MONGOUSER;
+    const password = process.env.MONGOPASSWORD;
+    const hostname = process.env.MONGOHOSTNAME;
+
+    if(!userName) {
+        throw Error("Database not configured. Set environment variables");
+    }
+
+    const uri = 'mongodb+srv://${userName}:${password}@${hostname}';
+
+    const client = new MongoClient(uri);
+
+    let collection = client.db('startup').collection('user');
+
+    letcurrentUserName = collection.find('username');
+    if(currentUserName == null) {
+        currentUserName = "Not logged in";
+    }
+
+    document.getElementById("username").textContent = currentUserName;
+}
+
 class ChessBoard {
     innerChessBoard = []; //a 2d array of the chess pieces
     activePiece = null; //The current piece that is showing its path
