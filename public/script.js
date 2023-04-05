@@ -1,30 +1,5 @@
 let chessboard;
 
-function loadDatabase() {
-    const { MongoClient } = require('mongodb');
-
-    const userName = process.env.MONGOUSER;
-    const password = process.env.MONGOPASSWORD;
-    const hostname = process.env.MONGOHOSTNAME;
-
-    if(!userName) {
-        throw Error("Database not configured. Set environment variables");
-    }
-
-    const uri = 'mongodb+srv://${userName}:${password}@${hostname}';
-
-    const client = new MongoClient(uri);
-
-    let collection = client.db('startup').collection('user');
-
-    letcurrentUserName = collection.find('username');
-    if(currentUserName == null) {
-        currentUserName = "Not logged in";
-    }
-
-    document.getElementById("username").textContent = currentUserName;
-}
-
 class ChessBoard {
     innerChessBoard = []; //a 2d array of the chess pieces
     activePiece = null; //The current piece that is showing its path
@@ -61,12 +36,46 @@ class ChessBoard {
     bishopTextContent = "♝";
     queenTextContent = "♛";
     kingTextContent = "♔";
+    currPlayerUsername = "";
 
     constructor() {
         this.board = this.makeBoard();
     }
 
+    jsonBoard() {
+        return JSON.stringify(this.innerChessBoard);
+    }
+
+    unJsonBoard(board) {
+        let newBoard = [];
+        for(var i in Object.values(board)) {
+            newBoard.push(i);
+        }
+        return newBoard;
+    }
+
+    async waitForBoardChange() {
+        let board = jsonBoard();
+        let changeMade = false;
+        let onlineBoard;
+        while(!changeMade) {
+            try {
+                const response = await fetch('/api/localBoard');
+                onlineBoard = await response.json();
+
+                if(onlineBoard === board) {
+                    break;
+                }
+            }
+            catch {
+                
+            }
+        }
+        this.innerChessBoard = this.unJsonBoard(onlineBoard);
+    }
+
     makeBoard() {
+        currPlayerUsername = localStorage.getItem("username");
         this.board = document.getElementById("chessboard");
         for(let i = 0; i < 8; i++) {
             this.innerChessBoard[i] = [];
@@ -229,7 +238,7 @@ class ChessBoard {
         }
     }
 
-    pickUp(piece) {
+    async pickUp(piece) {
         if(piece === null) {
             this.displayWinMessage();
             return;
@@ -287,6 +296,9 @@ class ChessBoard {
                     this.setAsUnactive(this.activePiece);
                     this.changeTurns();
                     this.removeTargets();
+                    this.updateBoard();
+                    this.waitForBoardChange();
+                    this.getBoard();
                 }
                 else if(this.in(piece, this.currentMarkedTargets)) {
                     let copyOfChessPiece = this.copyChessPiece(piece.childNodes[2]);
@@ -304,10 +316,34 @@ class ChessBoard {
                     this.removeTargets();
                     this.removePathNodes();
                     this.changeTurns();
+                    this.updateBoard();
+                    this.waitForBoardChange();
+                    this.getBoard();
                 }
             }
         }
     }
+
+    async updateBoard() {
+        const currBoard = jsonBoard();
+        const firstUser = this.currPlayerUsername;
+        const secondUser = "";//TODO: 
+            
+        try {
+            const response = await fetch('api/board', {
+                method: 'POST',
+                headers: {'content-type': 'application/json', 'firstUser': firstUser, 'secondUser': secondUser},
+                body: currBoard,
+            });
+
+            const board = await response.json();
+            localStorage.setItem('currBoard', board);               
+        }
+        catch {
+            localStorage.setItem('currBoard', currBoard);
+        }
+    }
+
 
     displayWinMessage() {
         if(this.whiteTurn && this.kingIsInCheck) {
