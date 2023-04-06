@@ -17,7 +17,7 @@
       crossorigin="anonymous"
     />
     </head>
-    <body class="text-light bg-dark" onload="chessboard = new ChessBoard();">
+    <body class="bg-dark text-light">
         <header class="container-fluid">
             <nav class="navbar fixed-top navbar-dark">
                 <h1 class="brand-name">Basic Chess</h1>
@@ -26,29 +26,19 @@
                             <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="play.html">Play offline</a>
+                            <a class="nav-link" href="play.html">Play offline</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="online.html">Find Match</a>
                         </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link" href="gamehistory.html">Game History</a>
-                        </li>-->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="gamehistory.html">Game History</a>
+                        </li>
                     </menu>
             </nav>
         </header>
         <main>
-            <div id="username">Not logged in</div>
-            <div id="king-in-check"></div>
-            <div id="chessboard">
-
-            </div>
-            <div class="text-center">
-                <button type="button" class="btn btn-primary" onclick="chessboard.pickUp(null)">Click here when YOU are in checkmate</button>
-            </div>
-            <div id="win-message">
-                Once a "King is in check" message is displayed, the above button will function
-            </div>
+            <div id="output">Where the tables go</div>
         </main>
         <script src="script.js"></script>
     </body>
