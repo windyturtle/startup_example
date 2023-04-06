@@ -46,6 +46,12 @@ class ChessBoard {
     makeBoard() {
         this.currPlayerUsername = localStorage.getItem("userName");
         document.getElementById("username").textContent = this.currPlayerUsername;
+        let user = {user: this.currPlayerUsername};
+        fetch('/api/setUser', {
+            method: 'POST',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify(user),
+        });
         this.board = document.getElementById("chessboard");
         for(let i = 0; i < 8; i++) {
             this.innerChessBoard[i] = [];
@@ -296,7 +302,7 @@ class ChessBoard {
         }
         const endGame = {firstUser: this.currPlayerUsername, secondUser: this.enemeyPlayerName, winner: this.whiteWin ? this.currPlayerUsername : this.enemeyPlayerName};
         try {
-            const response = await fetch('api/endgame', {
+            const response = await fetch('/api/endgame', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json'},
                 body: JSON.stringify(endGame),

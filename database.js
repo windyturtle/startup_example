@@ -1,8 +1,8 @@
 const {MongoClient} = require('mongodb');
 
-const userName = process.env.MONGOUSER;
-const password = process.env.MONGOPASSWORD;
-const hostname = process.env.MONGOHOSTNAME;
+const userName = "tiberiusbaker";//process.env.MONGOUSER;
+const password = "JourneyBeforeDestination";//process.env.MONGOPASSWORD;
+const hostname = "startup.10aba6w.mongodb.net/";//process.env.MONGOHOSTNAME;
 
 if (!userName) {
   throw Error('Database not configured. Set environment variables');
@@ -18,10 +18,8 @@ function recordGame(gameData) {
 }
 
 function getGameHistory(body) {
-  const query = {firstUser: body['firstUser']};
-  const options = {
-    limit: 10,
-  }
+  const query = {firstUser: body};
+  const options = {};
   const cursor = gameHistoryCollection.find(query, options);
   return cursor.toArray();
 }

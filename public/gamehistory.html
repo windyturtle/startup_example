@@ -37,10 +37,20 @@
                     </menu>
             </nav>
         </header>
-        <main>
-            <div id="output">Where the tables go</div>
+        <main class="container-fluid bg-secondary text-center">
+            <table class="table table-warning table-striped-columns">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>You</th>
+                        <th>Enemy Username</th>
+                        <th>Winner</th>
+                    </tr>
+                </thead>
+                <tbody id="gamehistory"></tbody>
+            </table>
         </main>
-        <script src="script.js"></script>
+        <script src="gamehistory.js"></script>
     </body>
     <footer class="bg-dark text-dark text-muted">
         <div class="container-fluid">
