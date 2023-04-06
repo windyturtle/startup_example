@@ -15,6 +15,17 @@ app.use(express.static('public'));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
+apiRouter.get('gamehistory', async (req, res) => {
+  const gameHistory = await DB.getGameHistory(req.body);
+  res.send(gameHistory);
+});
+
+apiRouter.post('/endgame', async (req, res) => {
+  DB.recordGame(req.body);
+  const gameHistory = await DB.getGameHistory(req.body);
+  res.send(gameHistory);
+});
+
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
   res.sendFile('index.html', {root: 'public'});

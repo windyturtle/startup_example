@@ -37,6 +37,7 @@ class ChessBoard {
     queenTextContent = "♛";
     kingTextContent = "♔";
     currPlayerUsername = "";
+    enemeyPlayerName = "Unknown";
 
     constructor() {
         this.board = this.makeBoard();
@@ -208,10 +209,6 @@ class ChessBoard {
     }
 
     async pickUp(piece) {
-        if(piece === null) {
-            this.displayWinMessage();
-            return;
-        }
         if(this.whiteWin || this.blackWin) {
             return;
         }
@@ -288,7 +285,7 @@ class ChessBoard {
     }
 
 
-    displayWinMessage() {
+    async displayWinMessage() {
         if(this.whiteTurn && this.kingIsInCheck) {
             document.getElementById("king-in-check").textContent = "Black Wins!";
             this.blackWin = true;
@@ -297,6 +294,37 @@ class ChessBoard {
             document.getElementById("king-in-check").textContent = "White Wins!";
             this.whiteWin = true;
         }
+        const endGame = {firstUser: this.currPlayerUsername, secondUser: this.enemeyPlayerName, winner: this.whiteWin ? this.currPlayerUsername : this.enemeyPlayerName};
+        try {
+            const response = await fetch('api/endgame', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json'},
+                body: JSON.stringify(endGame),
+            });
+
+            const gameHistory = await response.json();
+            localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+        }
+        catch {
+            this.updateHistoryLocal(endGame);
+        }
+    }
+
+    updateHistoryLocal(endGame) {
+        let gameHistory = [];
+        const gameHistoryText = localStorage.getItem('gameHistory');
+        if(gameHistoryText) {
+            gameHistory = JSON.parse(gameHistoryText);
+        }
+
+        gameHistory.push(endGame);
+
+        let newGameHistory = [];
+        for(let i = gameHistory.length; i > gameHistory.length - 10; i--) {
+            newGameHistory.push(gameHistory[i]);
+        }
+
+        localStorage.setItem('gameHistory', JSON.stringify(newGameHistory));
     }
 
     checkKingCheckAfterMove(piece, pieceColor) { //Returns false if King is still in check after moving piece, returns true if not

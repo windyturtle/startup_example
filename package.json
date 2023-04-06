@@ -1,5 +1,5 @@
 {
-  "name": "startup_example",
+  "name": "simon",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/windyturtle/startup_example#readme",
   "dependencies": {
-    "express": ">=4.18.2",
-    "mongodb": ">=5.1.0",
-    "node": ">=19.8.1"
-  }
+    "express": "^4.18.2",
+    "mongodb": "^5.1.0"
+  },
+  "devDependencies": {}
 }
