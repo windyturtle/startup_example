@@ -3,7 +3,16 @@ async function loadGameHistory() {
 
     try {
         const response = await fetch('/api/gamehistory');
+        
         gameHistory = await response.json();
+
+        let newHistory = [];
+
+        for(let i = gameHistory.length; i > gameHistory.length - 10; i--) {
+            newHistory.push(gameHistory[i]);
+        }
+
+        gameHistory = newHistory;
 
         localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
     } catch {
