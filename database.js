@@ -2,9 +2,9 @@ const {MongoClient} = require('mongodb');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 
-const userName = process.env.MONGOUSER;
-const password = process.env.MONGOPASSWORD;
-const hostname = process.env.MONGOHOSTNAME;
+const userName = "tiberiusbaker";//process.env.MONGOUSER;
+const password = "JourneyBeforeDestination";//process.env.MONGOPASSWORD;
+const hostname = "startup.10aba6w.mongodb.net/";//process.env.MONGOHOSTNAME;
 
 if (!userName) {
   throw Error('Database not configured. Set environment variables');
@@ -21,7 +21,7 @@ function getUser(email) {
 }
 
 function getUserByToken(token) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ token: token.token });
 }
 
 async function createUser(email, password) {
@@ -42,7 +42,7 @@ function recordGame(gameData) {
 }
 
 function getGameHistory(body) {
-  const query = {firstUser: body};
+  const query = {firstUser: body.email};
   const options = {};
   const cursor = gameHistoryCollection.find(query, options);
   return cursor.toArray();

@@ -1,4 +1,6 @@
 let chessboard;
+const gameEndEvent = 'gameEnd';
+const gameStartEvent = 'gameStart';
 
 class ChessBoard {
     innerChessBoard = []; //a 2d array of the chess pieces
@@ -37,10 +39,47 @@ class ChessBoard {
     queenTextContent = "♛";
     kingTextContent = "♔";
     currPlayerUsername = "";
-    enemeyPlayerName = "Unknown";
+    enemeyPlayerName = "The Void";
+    socket;
+
 
     constructor() {
         this.board = this.makeBoard();
+        this.configureWebSocket();
+        this.broadcastEvent(this.currPlayerUsername, gameStartEvent, {});
+    }
+
+    configureWebSocket() {
+        const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+        this.socket.onopen = (event) => {
+            this.displayMessage('system', 'game', 'connected');
+        };
+        this.socket.onclose = (event) => {
+            this.displayMessage('systme', 'game', 'disconnected');
+        };
+        this.socket.onmessage = async (event) => {
+            const msg = JSON.parse(await event.data.text());
+            if(msg.type === gameEndEvent) {
+                this.displayMessage('player', msg.from, `scored ${msg.value.score}`);
+            } else if(msg.type === gameStartEvent) {
+                this.displayMessage('player', msg.from, `started a new game`);
+            }
+        };
+    }
+
+    displayMessage(cls, from, msg) {
+        const chatText = document.querySelector('#player-messages');
+        chatText.innerHTML = `<div class="event"><span class="${cls}-event">${from}</span> ${msg}</div>` + chatText.innerHTML;
+    }
+
+    broadcastEvent(from, type, value) {
+        const event = {
+            from: from,
+            type: type,
+            value: value,
+        };
+        this.socket.send(JSON.stringify(event));
     }
 
     makeBoard() {
@@ -301,6 +340,13 @@ class ChessBoard {
             this.whiteWin = true;
         }
         const endGame = {firstUser: this.currPlayerUsername, secondUser: this.enemeyPlayerName, winner: this.whiteWin ? this.currPlayerUsername : this.enemeyPlayerName};
+        if(this.whiteWin === true) {
+            message = " won against " + this.enemeyPlayerName;
+        }
+        else {
+            message = " lost to " + this.enemeyPlayerName;
+        }
+        this.broadcastEvent(this.currPlayerUsername, message, {})
         try {
             const response = await fetch('/api/endgame', {
                 method: 'POST',

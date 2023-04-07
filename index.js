@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const app = express();
 const DB = require('./database.js');
+const { peerProxy } = require('./peerProxy.js');
 
 const authCookieName = 'token';
 
@@ -12,18 +13,18 @@ const port = process.argv.length > 2 ? process.argv[2] : 3000;
 // JSON body parsing using built-in middleware
 app.use(express.json());
 
-app.user(cookieParser());
+app.use(cookieParser());
 
 // Serve up the applications static content
 app.use(express.static('public'));
 
 // Router for service endpoints
-var apiRouter = express.Router();
+const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 apiRouter.get('/gamehistory', async (req, res) => {
   let gameHistory;
-  gameHistory = await DB.getGameHistory(this.currUser);
+  gameHistory = await DB.getGameHistory(await DB.getUserByToken(req.cookies));
   res.send(gameHistory);
 });
 
@@ -76,7 +77,7 @@ apiRouter.get('/user/:email', async (req, res) => {
   res.status(404).send({ msg: 'Unknown' });
 });
 
-var secureApiRouter = express.Router();
+const secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
 secureApiRouter.use(async (req, res, next) => {
@@ -107,6 +108,8 @@ app.use((_req, res) => {
   res.sendFile('index.html', {root: 'public'});
 });
 
-app.listen(port, () => {
+const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+peerProxy(httpService);

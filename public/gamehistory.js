@@ -8,11 +8,12 @@ async function loadGameHistory() {
 
         let newHistory = [];
 
-        for(let i = gameHistory.length; i > gameHistory.length - 10; i--) {
+        for(let i = gameHistory.length - 1; i >= 0; i--) {
             newHistory.push(gameHistory[i]);
         }
 
         gameHistory = newHistory;
+        gameHistory.length = 10;
 
         localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
     } catch {
