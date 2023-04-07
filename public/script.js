@@ -46,7 +46,6 @@ class ChessBoard {
     constructor() {
         this.board = this.makeBoard();
         this.configureWebSocket();
-        this.broadcastEvent(this.currPlayerUsername, gameStartEvent, {});
     }
 
     configureWebSocket() {
@@ -82,15 +81,10 @@ class ChessBoard {
         this.socket.send(JSON.stringify(event));
     }
 
-    makeBoard() {
+    async makeBoard() {
         this.currPlayerUsername = localStorage.getItem("userName");
         document.getElementById("username").textContent = this.currPlayerUsername;
-        let user = {user: this.currPlayerUsername};
-        fetch('/api/setUser', {
-            method: 'POST',
-            headers: {'content-type': 'application/json'},
-            body: JSON.stringify(user),
-        });
+    
         this.board = document.getElementById("chessboard");
         for(let i = 0; i < 8; i++) {
             this.innerChessBoard[i] = [];
@@ -340,13 +334,14 @@ class ChessBoard {
             this.whiteWin = true;
         }
         const endGame = {firstUser: this.currPlayerUsername, secondUser: this.enemeyPlayerName, winner: this.whiteWin ? this.currPlayerUsername : this.enemeyPlayerName};
+        let message;
         if(this.whiteWin === true) {
             message = " won against " + this.enemeyPlayerName;
         }
         else {
             message = " lost to " + this.enemeyPlayerName;
         }
-        this.broadcastEvent(this.currPlayerUsername, message, {})
+        this.broadcastEvent(this.currPlayerUsername, message, {});
         try {
             const response = await fetch('/api/endgame', {
                 method: 'POST',

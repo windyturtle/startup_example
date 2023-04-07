@@ -54,4 +54,24 @@ function displayGameHistory(gameHistory) {
     }
 }
 
+function callService(url, displayCallback) {
+    fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+            displayCallback(data);
+        });
+}
+
+function displayQuote(data) {
+    const container = document.querySelector("#quote");
+
+    const quote = document.createElement("p");
+    quote.classList.add("quote");
+
+    quote.textContent = data.content;
+
+    container.appendChild(quote);
+}
+
 loadGameHistory();
+callService("https://api.quotable.io/random", displayQuote);
